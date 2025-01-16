@@ -2,6 +2,13 @@
 #include <string>
 #include <curl/curl.h>
 
+/**
+ * @brief Executes an HTTP request to the given URL with the provided access token.
+ *
+ * @param url
+ * @param access_token
+ * @return std::string
+ */
 std::string execute_request(const std::string &url, const std::string &access_token)
 {
     CURL *curl;
@@ -35,6 +42,15 @@ std::string execute_request(const std::string &url, const std::string &access_to
     return response_data;
 }
 
+/**
+ * @brief this function sets the necessary params for the url req to place an order
+ *
+ * @param access_token
+ * @param instrument_name
+ * @param amount
+ * @param price
+ * @return std::string
+ */
 std::string place_order(const std::string &access_token, const std::string &instrument_name, int amount, double price)
 {
     std::string url = "https://test.deribit.com/api/v2/private/buy?instrument_name=" + instrument_name +
@@ -43,9 +59,29 @@ std::string place_order(const std::string &access_token, const std::string &inst
     return execute_request(url, access_token);
 }
 
+/**
+ * @brief Get the order object
+ *
+ * @param access_token
+ * @return std::string
+ */
 std::string get_order(std::string &access_token)
 {
     std::string url = "https://test.deribit.com/api/v2/private/get_open_orders";
+    return execute_request(url, access_token);
+}
+
+/**
+ * @brief this function cancels an order by the order_id provided in the args
+ *
+ * @param access_token
+ * @param order_id
+ * @return std::string
+ */
+std::string cancel_order(std::string &access_token, std::string &order_id)
+{
+    std::cout << "Order ID: " << order_id << std::endl;
+    std::string url = "https://test.deribit.com/api/v2/private/cancel?order_id=" + order_id;
     return execute_request(url, access_token);
 }
 
@@ -60,7 +96,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     std::string action = argv[1];
-    std::string access_token = "1737032586071.1f9188O_.7lOXevGVVqT2Z_zJCdrB0TN44bYlsUeJrHxdVeLJkHb02mtIlMawRTRdBkn-5WfW_mA0cVhFZdeelIM9m75sxI6kL54DG3x3zx_3yAcPJcb-jAX9wwRpH6gykp6EUc2vYVOArIDef_Y27I2VU7JfVWjt8rjeG7pxhX7-wQKG7rEYu55Yzh3FMwTx-JV-xmPJtr5n4-bgHI6pD6E89JjEiFhoGzew-eLgPKjYls_GrUxY3AUSy6fm9e3gCEuPN6qUAYA3oScPsl0v3NlH4L9DnO6L_VlL_1ibn9Y4HDfSdqS3_x5wmcEo6uWcVkUsqqDc_PjXPMW3RzvP31dF-Z6UawrIKVUityfTPHCQlygqF6eJrGZWxC7G";
+    std::string access_token = "1737037286733.1YUuqUl8.66GV7D8GTMaDB0rPJaY-otGa-IkFYcVDwB94T5-_bTH2zP-am9wY7UlwKq1FX-kpSWI-R5s373N3Sisx-nTfdw3_SH-NA8y6wS8wDrOSl8w9RVS_jxoXEinR4lNVzc1voEufPBR1tdAglkEqPDPvd9G6oVFnWD6wIgk4t12EhN7VbNsbJAlVj1yTI9zdzYjTIcl9WDCAf9IiJI8-HtdIMRyWJIX9HndgT2-j--QRx0zBzO27Eu5rN7o-dK520h5UNshNkM50CQME3TjwwSmiBdsclnqGtv30QJrbC9R00KpFfSHuZvFaqwN0K5wIQGZ4QwIgTI4HKxpqB07YEtqSognlpvC9NZZT75WWctCH1_R07gU59EuL";
 
     if (action == "place")
     {
@@ -80,6 +116,18 @@ int main(int argc, char *argv[])
     if (action == "get_order")
     {
         std::string response = get_order(access_token);
+        std::cout << "Action Response: " << response << std::endl;
+    }
+    if (action == "cancel_order")
+    {
+        std::string order_id = argv[2];
+        if (argc != 3)
+        {
+            std::cerr << "Usage: " << argv[0] << " cancel_order <order_id>\n";
+            return 1;
+        }
+
+        std::string response = cancel_order(access_token, order_id);
         std::cout << "Action Response: " << response << std::endl;
     }
     return 0;
