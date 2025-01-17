@@ -85,6 +85,12 @@ std::string cancel_order(std::string &access_token, std::string &order_id)
     return execute_request(url, access_token);
 }
 
+std::string get_order_by_id(std::string &access_token, std::string &order_id)
+{
+    std::string url = "https://test.deribit.com/api/v2/private/get_order_state?order_id=" + order_id;
+    return execute_request(url, access_token);
+}
+
 int main(int argc, char *argv[])
 {
     if (argc < 2)
@@ -96,7 +102,7 @@ int main(int argc, char *argv[])
         return 1;
     }
     std::string action = argv[1];
-    std::string access_token = "1737037286733.1YUuqUl8.66GV7D8GTMaDB0rPJaY-otGa-IkFYcVDwB94T5-_bTH2zP-am9wY7UlwKq1FX-kpSWI-R5s373N3Sisx-nTfdw3_SH-NA8y6wS8wDrOSl8w9RVS_jxoXEinR4lNVzc1voEufPBR1tdAglkEqPDPvd9G6oVFnWD6wIgk4t12EhN7VbNsbJAlVj1yTI9zdzYjTIcl9WDCAf9IiJI8-HtdIMRyWJIX9HndgT2-j--QRx0zBzO27Eu5rN7o-dK520h5UNshNkM50CQME3TjwwSmiBdsclnqGtv30QJrbC9R00KpFfSHuZvFaqwN0K5wIQGZ4QwIgTI4HKxpqB07YEtqSognlpvC9NZZT75WWctCH1_R07gU59EuL";
+    std::string access_token = "1737145024106.1XgG9uVj.-AgvhGEtrpl9dMgzbWJpvFmSl6InwobH_n0uv28NM0Yp5CcB10yHnBuogb_UT-1ebgQDca7Dg-1gSy75WyB0S8n2U_gHmGR8sxLTLVxqslaVsfEeGlcjJZKssinS7W-5OjlhrLi-WofvtfERC4eqK_2-BOBY364wB8fBpSsMfWD0Pf5iDxi9arz2Cmdo0eRONHJYAuTBX2GeOXKTxFZnUAHJxpvS2VeopmMnCiqyHBkWrcHqLWULmsKqzttR_2upMW65F62jtZ2u8IEpOSCXt6AheE9GL9ViMsE4daVlRzJR0nqEjsGmgkOOgCyLu8FS3-jw-JaTuY86tKFIpXF2gXb4GvEeSN_3om0KIM4hrFEsvLs28uHi";
 
     if (action == "place")
     {
@@ -130,5 +136,19 @@ int main(int argc, char *argv[])
         std::string response = cancel_order(access_token, order_id);
         std::cout << "Action Response: " << response << std::endl;
     }
+
+    if (action == "get_order_by_id")
+    {
+        std::string order_id = argv[2];
+        if (argc != 3)
+        {
+            std::cerr << "Usage: " << argv[0] << " get_order_by_id <order_id>\n";
+            return 1;
+        }
+
+        std::string response = get_order_by_id(access_token, order_id);
+        std::cout << "Action Response: " << response << std::endl;
+    }
+
     return 0;
 }
